@@ -1,4 +1,6 @@
-﻿namespace csharp.training.congruent.apps
+﻿using System;
+
+namespace csharp.training.congruent.apps
 {
     // Define an Enum for days of the week
     enum Weekdays
@@ -16,26 +18,53 @@
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("===== Meeting Day Checker =====");
-            Console.Write("Enter the meeting day (e.g., Monday): ");
-            string input = Console.ReadLine();
+            try
+            {
+                Console.WriteLine("===== Meeting Day Checker =====");
+                Console.Write("Enter the meeting day (e.g., Monday): ");
+                string input = Console.ReadLine();
 
-            // Try converting user input to Enum
-            if (Enum.TryParse(input, true, out Weekdays meetingDay))
-            {
-                if (IsWeekday(meetingDay))
+                if (string.IsNullOrWhiteSpace(input))
                 {
-                    Console.WriteLine($"{meetingDay} is a Weekday. ✅ Meeting can be scheduled.");
+                    Console.WriteLine("Error: Day name cannot be empty.");
+                    return;
                 }
-                else
+
+                try
                 {
-                    Console.WriteLine($"{meetingDay} is a Weekend. ❌ Meeting not scheduled.");
+                    // Try converting user input to Enum (case-insensitive)
+                    if (Enum.TryParse(input, true, out Weekdays meetingDay))
+                    {
+                        if (IsWeekday(meetingDay))
+                        {
+                            Console.WriteLine($"{meetingDay} is a Weekday. ✅ Meeting can be scheduled.");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"{meetingDay} is a Weekend. ❌ Meeting not scheduled.");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid day entered. Please enter a valid weekday name.");
+                    }
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine($"Invalid input format: {ex.Message}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"An error occurred while checking the day: {ex.Message}");
                 }
             }
-            else
+            catch (Exception ex)
             {
-                Console.WriteLine("Invalid day entered. Please enter a valid weekday name.");
+                Console.WriteLine($"Unexpected program error: {ex.Message}");
             }
+
+            Console.WriteLine("\nPress any key to exit...");
+            Console.ReadKey();
         }
 
         // Function to check if it’s a weekday
